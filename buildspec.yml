@@ -15,7 +15,7 @@ phases:
       - docker tag $ECR_REPO_URI:latest $ECR_REPO_URI:$IMAGE_TAG
   post_build:
     commands:
-      - docker push $ECS_REPO_URI:latestc
+      - docker push $ECS_REPO_URI:latest
       - docker push $ECS_REPO_URI:$IMAGE_TAG
       - printf '[{"name":"hello-aws-ecs-cicd","imageUri":"%s"}]' $ECR_REPO_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
