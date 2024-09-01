@@ -1,0 +1,6 @@
+ # CREATE CODEBUILD
+ aws cloudformation create-stack \
+ --stack-name hello-aws-ecs-cicd \
+ --template-body file://./cft/codebuild-cft.yaml \
+ --region us-east-2 \
+ --capabilities CAPABILITY_NAMED_IAM

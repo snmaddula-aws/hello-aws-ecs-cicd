@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  CodeBuildProject:
+    Type: 'AWS::CodeBuild::Project'
+    Properties:
+      Name: 'hello-aws-ecs-service-dev-build'
+      Source:
+        Type: 'GITHUB'
+        Location: 'https://github.com/snmaddula-aws/hello-aws-ecs-cicd'
+        BuildSpec: 'buildspec.yml'
+      Artifacts:
+        Type: 'NO_ARTIFACTS'
+      Environment:
+        Type: 'LINUX_CONTAINER'
+        Image: 'aws/codebuild/standard:6.0'
+        ComputeType: 'BUILD_GENERAL1_SMALL'
+        EnvironmentVariables:
+          - Name: 'EXAMPLE_ENV_VAR'
+            Value: 'example-value'
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      TimeoutInMinutes: 10
+      EncryptionKey: 'alias/aws/s3'
+
+  CodeBuildServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'CodeBuildServiceRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'codebuild.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser'
+      Policies:
+        - PolicyName: 'CodeBuildServicePolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+              - Effect: 'Allow'
+                Action:
+                  - 's3:ListBucket'
+                  - 's3:GetObject'
+                  - 's3:PutObject'
+                Resource: '*'
+              - Effect: 'Allow'
+                Action:
+                  - 'codebuild:BatchGetBuilds'
+                  - 'codebuild:StartBuild'
+                Resource: '*'

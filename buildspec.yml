@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - ECR_REPO_URI=163987226377.dkr.ecr.us-east-2.amazonaws.com/hello-aws-ecs-cicd
-      - aws ecr get-login-password --region=us-west-2 | docker login --username AWS --password-stdin $ECR_REPO_URI
+      - aws ecr get-login-password --region=us-east-2 | docker login --username AWS --password-stdin $ECR_REPO_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
@@ -15,10 +15,10 @@ phases:
       - docker tag $ECR_REPO_URI:latest $ECR_REPO_URI:$IMAGE_TAG
   post_build:
     commands:
-      - docker push $ECS_REPO_URI:latest
+      - docker push $ECS_REPO_URI:latestc
       - docker push $ECS_REPO_URI:$IMAGE_TAG
       - printf '[{"name":"hello-aws-ecs-cicd","imageUri":"%s"}]' $ECR_REPO_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
 
-  artifacts:
-    files: imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
