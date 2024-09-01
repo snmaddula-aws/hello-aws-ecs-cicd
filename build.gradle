@@ -37,10 +37,6 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.jar {
-	archiveFileName.set("app.jar")
-}
-
 tasks.bootJar {
-	archiveFileName.set("app-plain.jar")
+	archiveFileName.set("app.jar")
 }

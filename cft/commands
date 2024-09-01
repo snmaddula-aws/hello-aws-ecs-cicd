@@ -1,6 +1,10 @@
  # CREATE CODEBUILD
  aws cloudformation create-stack \
- --stack-name hello-aws-ecs-cicd \
- --template-body file://./cft/codebuild-cft.yaml \
+ --stack-name hello-aws-ecs-codebuild \
+ --template-body file://./cft/codebuild_cft.yaml \
  --region us-east-2 \
  --capabilities CAPABILITY_NAMED_IAM
+
+#
+aws cloudformation wait stack-delete-complete --stack-name my-ecs-stack --region us-east-2
+aws cloudformation create-stack --stack-name my-ecs-stack --template-body file://./cft/ecs-fargate-with-codebuild-pipeline.yml --region us-east-2 --capabilities CAPABILITY_NAMED_IAM
